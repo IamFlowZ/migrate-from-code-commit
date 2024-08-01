@@ -47,6 +47,8 @@ read -p "If you have done so, press enter to continue. Otherwise, press ctrl+c t
 
 cd $sourceDir
 
+git fetch origin
+
 git remote add $newRemoteName $newRemote
 
 echo "Remote $newRemoteName added with url $newRemote"
