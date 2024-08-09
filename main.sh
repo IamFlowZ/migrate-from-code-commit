@@ -39,7 +39,7 @@ fi
 if [ -z "$newRemote" ]; then
   echo "New remote is required"
   exit 1
-
+fi
 
 if [ -z "$newRemoteName" ]; then
   newRemoteName="newRemote"
@@ -69,8 +69,8 @@ echo "Remote $newRemoteName added with url $newRemote"
 read -p "Would you like push to the new remote (y/n)?" choice1
 echo ""
 case "$choice1" in
-  y|Y|yes ) push=1;;
-  n|N|no ) push=0;;
+  y|Y ) push=1;;
+  n|N ) push=0;;
   * ) echo "invalid";;
 esac
 if [ $push -eq 1 ]; then
@@ -83,8 +83,8 @@ fi
 read -p "Would you like this to replace CodeCommit (y/n)?" choice
 echo ""
 case "$choice" in
-  y|Y|yes ) replace=1;;
-  n|N|no ) replace=0;;
+  y|Y ) replace=1;;
+  n|N ) replace=0;;
   * ) echo "invalid";;
 esac
 
