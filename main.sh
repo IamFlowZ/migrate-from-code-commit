@@ -6,19 +6,28 @@
 # bash main.sh /path/to/source/directory
 
 sourceDir=$1
-newRemoteName=$2
-newRemote=$3
-pushToNewRemote=$4
+newRemote=$2
+newRemoteName=$3
+
+$help="
+Usage: bash main.sh /path/to/source/directory newRemoteUrl newRemoteName
+
+newRemoteUrl - full url to new remote repository
+newRemoteName - optional - name of the new remote. overwritten if you decide to set it to origin
+
+You will be prompted to 
+ - confirm the values before the script runs
+ - confirm if you want to push to the new remote
+ - confirm if you want to replace the CodeCommit remote with the new remote"
 
 if [ $sourceDir == "--help" ]; then
-  echo -e "Usage: bash main.sh /path/to/source/directory newRemoteName newRemoteUrl pushToNewRemote(optional, "y" or don't supply) \nIf you intend to replace the CodeCommit remote, the newRemoteName is temporary and will be renamed to origin"
+  echo "$help"
   exit 0
 fi
 
 echo "Source directory: $sourceDir"
-echo "New remote name: $newRemoteName"
 echo "New remote url: $newRemote"
-echo "Push to new remote: $pushToNewRemote"
+echo "New remote name: $newRemoteName"
 
 read -p "Do these values look correct? If so, press enter to continue. Otherwise, press ctrl+c to exit."
 
@@ -30,6 +39,10 @@ fi
 if [ -z "$newRemote" ]; then
   echo "New remote is required"
   exit 1
+
+
+if [ -z "$newRemoteName" ]; then
+  newRemoteName="newRemote"
 fi
 
 if [ ! -d "$sourceDir" ]; then
@@ -53,16 +66,25 @@ git remote add $newRemoteName $newRemote
 
 echo "Remote $newRemoteName added with url $newRemote"
 
-if [[ $pushToNewRemote == "y" || $pushToNewRemote == "Y" ]];then
-  echo "Pushing new remote..."
+read -p "Would you like push to the new remote (y/n)?" choice1
+echo ""
+case "$choice1" in
+  y|Y|yes ) push=1;;
+  n|N|no ) push=0;;
+  * ) echo "invalid";;
+esac
+if [ $push -eq 1 ]; then
   git push $newRemoteName --all
+  echo "Pushed to $newRemote"
+else
+  echo "Not pushing to $newRemote"
 fi
 
 read -p "Would you like this to replace CodeCommit (y/n)?" choice
 echo ""
 case "$choice" in
-  y|Y ) replace=1;;
-  n|N ) replace=0;;
+  y|Y|yes ) replace=1;;
+  n|N|no ) replace=0;;
   * ) echo "invalid";;
 esac
 

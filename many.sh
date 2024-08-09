@@ -1,21 +1,28 @@
 #!/bin/bash
 
-newRemoteName=$1
-newRemote=$2
-pushToNewRemote=$3
+$help=$1
+$helpText="
+Usage: bash many.sh
+This script will run main.sh for each directory in the directories array. Pairing information with the remotes array at the same index.
+You do still have to answer the questions for each directory, but this script will automate the process of running main.sh for each directory."
 
 directories=(
   .
   .
 )
 
-if [ $newRemoteName == "--help" ]; then
-  echo -e "Usage: bash many.sh newRemoteName newRemoteUrl pushToNewRemote(optional, "y" or don't supply) \nEnsure you have populated the directories list prior to running.\nIf you intend to replace the CodeCommit remote, the newRemoteName is temporary and will be renamed to origin"
+remotes=(
+  ''
+  ''
+)
+
+if [ $help == "--help" ]; then
+  echo -e "Usage: bash many.sh"
   exit 0
 fi
 
-for sourceDir in "${directories[@]}"; do
-  bash main.sh $sourceDir $newRemoteName $newRemote $pushToNewRemote
+for index in "${!directories[@]}"; do
+  bash main.sh ${directories[$index]} ${remotes[$index]}
   echo -e "\n\n"
 done
 
